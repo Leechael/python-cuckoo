@@ -58,7 +58,7 @@ class CuckooFilter:
         i = random.choice((i1, i2))
         for kick_count in range(self.max_kicks):
             fingerprint = self.buckets[i].swap(fingerprint)
-            i = (i ^ self.index_hash(fingerprint)) % self.capacity
+            i = (i ^ int.from_bytes(fingerprint, byteorder='big')) % self.capacity
 
             if self.buckets[i].insert(fingerprint):
                 return i
@@ -90,7 +90,7 @@ class CuckooFilter:
     def calculate_index_pair(self, item, fingerprint):
         '''Calculate both possible indices for the item'''
         i1 = self.index_hash(item)
-        i2 = (i1 ^ self.index_hash(fingerprint)) % self.capacity
+        i2 = (i1 ^ int.from_bytes(fingerprint, byteorder='big')) % self.capacity
         return i1, i2
 
     def fingerprint(self, item):

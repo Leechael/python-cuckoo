@@ -7,7 +7,7 @@ class Bucket:
     def __init__(self, size=4):
         '''
         Initialize bucket.
-        
+
         size : the maximum nr. of fingerprints the bucket can store
             Default size is 4, which closely approaches the best size for FPP between 0.00001 and 0.002 (see Fan et al.).
             If your targeted FPP is greater than 0.002, a bucket size of 2 is more space efficient.
@@ -46,7 +46,7 @@ class Bucket:
     def swap(self, fingerprint):
         '''
         Swap a fingerprint with a randomly chosen fingerprint from the bucket.
-        
+
         The given fingerprint is stored in the bucket.
         The swapped fingerprint is returned.
         '''
