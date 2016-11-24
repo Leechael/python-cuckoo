@@ -1,5 +1,6 @@
 # python-cuckoo
-```python-cuckoo``` is an implementation of a Cuckoo filter in python 3, created by [Michael The](https://github.com/michael-the1) and the forked version proposes for:
+
+`python-cuckoo` is an implementation of a Cuckoo filter in python 3, created by [Michael The](https://github.com/michael-the1) and the forked version proposes for:
 
 - Apply simplification suggestion for [David Eppstein](http://11011110.livejournal.com/327681.html).
 - Serialize and unserialize so we can do persistent storage.
@@ -10,7 +11,14 @@ Just like Bloom filters, there is a (very small and tunable) chance this will re
 Unlike regular Bloom filters, Cuckoo filters also support deletion of items.
 Cuckoo filters use less space than Bloom filters for low false positive rates.
 
-# Usage
+
+## Installation
+
+```Shell
+>>> pip install python-cuckoo
+```
+
+## Usage
 
 ```python
 >>> import cuckoofilter
@@ -38,7 +46,7 @@ True
 False
 ```
 
-# Why use Cuckoo filters
+## Why use Cuckoo filters
 The short answer: if you don't know whether you should use a Bloom filter or a Cuckoo filter, use a Cuckoo filter.
 For a well-written and visual explanation, check out [Probabilistic Filters By Example](https://bdupras.github.io/filter-tutorial/).
 
@@ -49,7 +57,7 @@ Some example usages of Bloom filters:
 - Deciding whether an item should be cached or not ([Akamai](http://dl.acm.org/citation.cfm?doid=2805789.2805800))
 - Keep track of what articles a user has already read ([Medium](https://medium.com/blog/what-are-bloom-filters-1ec2a50c68ff#.xlkqtn1vy))
 
-# Why not use Cuckoo filters
+## Why not use Cuckoo filters
 As a Cuckoo filter is filled up, insertion will become slower as more items need to be "kicked" around.
 If your application is sensitive to timing on insertion, choose a different data structure.
 
@@ -58,9 +66,9 @@ This occurs when the filter is about to reach full capacity or a fingerprint is 
 This limitation is also present in Counting Bloom filters.
 If this limitation is unacceptable for your application, use a different data structure.
 
-# Testing & profiling
-Python-cuckoo comes with a test suite (```cuckoofilter/tests/```).
-We recommend using [```py.test```](http://pytest.org/) to run unit tests.
+## Testing & profiling
+Python-cuckoo comes with a test suite (`cuckoofilter/tests/`).
+We recommend using [`py.test`](http://pytest.org/) to run unit tests.
 
 ```
 pip install pytest
@@ -74,11 +82,11 @@ pip install pytest-cov
 pytest --cov-report html cuckoofilter/
 ```
 
-The report will be created in a folder called ```htmlcov```.
-Open ```htmlcov/index.html``` to inspect what parts of the library are tested.
+The report will be created in a folder called `htmlcov`.
+Open `htmlcov/index.html` to inspect what parts of the library are tested.
 
 To find out what parts of the library are slow, we need to profile our library.
-To do this, we can use ```cProfile``` by running ```python -m cProfile example.py```.
+To do this, we can use `cProfile` by running `python -m cProfile example.py`.
 For a visualization of this profiling information, we can use [snakeviz](https://jiffyclub.github.io/snakeviz/).
 
 ```
@@ -87,7 +95,7 @@ python -m cProfile -o out.profile example.py
 snakeviz out.profile
 ```
 
-# Original paper
+## Original paper
 
 Cuckoo filters were first described in:
 
@@ -97,7 +105,7 @@ Cuckoo filters were first described in:
 
 Their reference implementation in C++ can be found on [github](https://github.com/efficient/cuckoofilter).
 
-## See also
+### See also
 
 - [Probablistic Filters By Example](https://bdupras.github.io/filter-tutorial/) for a well-written and visual explanation of Cuckoo filters vs. Bloom filters.
 - [Cuckoo Filters](http://mybiasedcoin.blogspot.nl/2014/10/cuckoo-filters.html) — blog post by M. Mitzenmacher, the fourth author of the original paper.
