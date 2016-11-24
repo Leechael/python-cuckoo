@@ -6,7 +6,7 @@ BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 setup(
     name='python-cuckoo',
     description="Cuckoo Filter implemenation for Python 3.x",
-    keywordds='cuckoofilter bloomfilter',
+    keywords='cuckoofilter bloomfilter',
     version="1.0.0",
     license='MIT',
     packages=find_packages(),

@@ -3,3 +3,5 @@
 .cache/
 .coverage
 htmlcov/
+dist/
+python_cuckoo.egg-info/
