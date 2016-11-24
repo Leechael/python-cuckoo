@@ -1,5 +1,8 @@
 # python-cuckoo
-```python-cuckoo``` is an implementation of a Cuckoo filter in python 3.
+```python-cuckoo``` is an implementation of a Cuckoo filter in python 3, created by [Michael The](https://github.com/michael-the1) and the forked version proposes for:
+
+- Apply simplification suggestion for [David Eppstein](http://11011110.livejournal.com/327681.html).
+- Serialize and unserialize so we can do persistent storage.
 
 Cuckoo filters serve as a drop-in replacement for Bloom filters.
 Just like Bloom filters, we can add items to the filter and then ask the filter whether that item is in the filter or not.
@@ -21,6 +24,12 @@ True
 
 >>> cf.contains('Michael The')
 False
+
+>>> len(cf.serialize().read())
+100041
+
+>>> cuckoofilter.CuckooFilter.unserialize(cf.serialize()).contains('Bin Fan')
+True
 
 >>> cf.delete('Bin Fan')
 True
