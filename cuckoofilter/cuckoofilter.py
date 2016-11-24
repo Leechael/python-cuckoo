@@ -1,5 +1,7 @@
 import mmh3
 import random
+from struct import pack, unpack
+from io import BytesIO
 
 from . import bucket
 
@@ -114,3 +116,47 @@ class CuckooFilter:
 
     def __sizeof__(self):
         return super().__sizeof__() + sum(b.__sizeof__() for b in self.buckets)
+
+    SERIALIZE_VERSION=1
+
+    def serialize(self):
+        io = BytesIO()
+        io.write(pack(
+            "H2Q3I",
+            self.SERIALIZE_VERSION,
+            self.capacity,
+            self.size,
+            self.bucket_size,
+            self.fingerprint_size,
+            self.max_kicks
+        ))
+        for bucket in self.buckets:
+            if len(bucket.b) > 0:
+                io.write(pack("?", True))
+                io.write(pack("I", len(bucket.b)))
+                for b in bucket.b:
+                    io.write(b)
+            else:
+                io.write(pack("?", False))
+        io.seek(0)
+        return io
+
+    @classmethod
+    def unserialize(cls, io):
+        (version, capacity, size, bucket_size, fingerprint_size, max_kicks) = unpack(
+            "H2Q3I", io.read(36))
+        assert version == cls.SERIALIZE_VERSION
+        cf = cls(capacity, fingerprint_size, bucket_size, max_kicks)
+        cf.size = size
+        i = 0
+        while True:
+            byte = io.read(1)
+            if not byte:
+                break
+            flag, = unpack("?", byte)
+            if flag:
+                size, = unpack("I", io.read(4))
+                for j in range(size):
+                    cf.buckets[i].b.append(io.read(fingerprint_size))
+            i += 1
+        return cf
