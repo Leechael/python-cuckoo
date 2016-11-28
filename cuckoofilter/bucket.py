@@ -57,6 +57,9 @@ class Bucket:
     def is_full(self):
         return len(self.b) >= self.size
 
+    def is_empty(self):
+        return len(self.b) == 0
+
     def __contains__(self, fingerprint):
         return self.contains(fingerprint)
 
