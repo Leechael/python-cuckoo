@@ -6,6 +6,16 @@ from io import BytesIO
 from . import bucket
 
 
+class CuckooFilterError(Exception):
+    pass
+
+class Fullfill(CuckooFilterError):
+    pass
+
+class StreamValueError(CuckooFilterError):
+    pass
+
+
 class CuckooFilter:
     '''
     A Cuckoo filter is a data structure for probablistic set-membership queries.
@@ -66,7 +76,7 @@ class CuckooFilter:
                 return i
 
         self.size = self.size - 1
-        raise Exception('Filter is full')
+        raise Fullfill()
 
     def contains(self, item):
         '''Checks if a string was inserted into the filter.'''
@@ -114,7 +124,7 @@ class CuckooFilter:
     def __repr__(self):
         return '<CuckooFilter: capacity=' + str(self.capacity) + ', fingerprint size=' + str(self.fingerprint_size) + ' byte(s)>'
 
-    def __sizeof__(self):
+    def __sizeof__(self):  # pragma: no cover
         return super().__sizeof__() + sum(b.__sizeof__() for b in self.buckets)
 
 
@@ -146,7 +156,7 @@ class CuckooFilter:
     @classmethod
     def unserialize(cls, io):
         if io.read(6) != cls.MAGIC_STR:
-            raise Exception("Unexpected input IO")
+            raise StreamValueError()
         (capacity, size, bucket_size, fingerprint_size, max_kicks) = unpack(
             "2Q3I", io.read(28))
         cf = cls(capacity, fingerprint_size, bucket_size, max_kicks)

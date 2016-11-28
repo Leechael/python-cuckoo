@@ -66,5 +66,5 @@ class Bucket:
     def __repr__(self):
         return '<Bucket: ' + str(self.b) + '>'
 
-    def __sizeof__(self):
+    def __sizeof__(self):  # pragma: no cover
         return super().__sizeof__() + self.b.__sizeof__()

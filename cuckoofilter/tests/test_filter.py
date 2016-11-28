@@ -1,5 +1,6 @@
 import pytest
 import cuckoofilter
+from io import BytesIO
 
 @pytest.fixture
 def cf():
@@ -22,17 +23,15 @@ def test_insert_full(cf):
     for _ in range(cf.bucket_size * 2):
         cf.insert('hello')
 
-    with pytest.raises(Exception) as e:
+    with pytest.raises(cuckoofilter.Fullfill) as e:
         cf.insert('hello')
 
-    assert str(e.value) == 'Filter is full'
     assert cf.size == (cf.bucket_size * 2)
 
 def test_insert_over_capacitiy(cf):
-    with pytest.raises(Exception) as e:
+    with pytest.raises(cuckoofilter.Fullfill) as e:
         for i in range((cf.capacity * cf.bucket_size) + 1):
             cf.insert(str(i))
-    assert str(e.value) == 'Filter is full'
     assert cf.load_factor() > 0.9
 
 def test_contains(cf):
@@ -65,3 +64,33 @@ def test_load_factor_empty(cf):
 def test_load_factor_non_empty(cf):
     cf.insert('hello')
     assert cf.load_factor() == (1 / (cf.capacity * cf.bucket_size))
+
+def test_serialize(cf):
+    for _ in range(cf.bucket_size):
+        cf.insert('hello')
+    io = cf.serialize()
+    assert isinstance(io, BytesIO)
+    assert io.tell() == 0
+
+def test_unserialize(cf):
+    for _ in range(cf.bucket_size):
+        cf.insert(str(_))
+    io = cf.serialize()
+    ncf = cuckoofilter.CuckooFilter.unserialize(io)
+    assert cf.capacity == ncf.capacity
+    assert cf.size == ncf.size
+    assert cf.fingerprint_size == ncf.fingerprint_size
+    assert cf.bucket_size == ncf.bucket_size
+    assert cf.max_kicks == ncf.max_kicks
+    for _ in range(ncf.bucket_size):
+        assert ncf.contains(str(_))
+
+def test_unserialize_with_invalid_file(cf):
+    with pytest.raises(cuckoofilter.StreamValueError) as e:
+        with open("/dev/random", "rb") as f:
+            cf = cuckoofilter.CuckooFilter.unserialize(f)
+
+def test_unserialize_with_reading_in_utf8(cf):
+    with pytest.raises(UnicodeDecodeError) as e:
+        with open("/dev/random") as f:
+            cf = cuckoofilter.CuckooFilter.unserialize(f)

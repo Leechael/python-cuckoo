@@ -8,6 +8,7 @@ def bucket():
 def test_initialization(bucket):
     assert bucket.size == 4
     assert bucket.b == []
+    assert bucket.is_empty()
 
 def test_insert(bucket):
     assert bucket.insert('hello')
