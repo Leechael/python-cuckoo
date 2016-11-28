@@ -7,7 +7,7 @@ setup(
     name='python-cuckoo',
     description="Cuckoo Filter implemenation for Python 3.x",
     keywords='cuckoofilter bloomfilter',
-    version="1.1.0",
+    version="1.1.1",
     license='MIT',
     packages=find_packages(),
     install_requires=[
@@ -22,7 +22,7 @@ setup(
     maintainer='Leechael Yim',
     maintainer_email='yanleech@gmail.com',
     url='https://github.com/Leechael/python-cuckoo',
-    download_url='https://github.com/Leechael/python-cuckoo/tarball/1.1.0',
+    download_url='https://github.com/Leechael/python-cuckoo/tarball/1.1.1',
     classifiers=[
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
