@@ -16,7 +16,7 @@ class StreamValueError(CuckooFilterError):
     pass
 
 
-class CuckooFilter:
+class CuckooFilter(object):
     '''
     A Cuckoo filter is a data structure for probablistic set-membership queries.
     We can insert items into the filter and, with a very low false positive probability (FPP), ask whether it contains an item or not.
@@ -29,6 +29,15 @@ class CuckooFilter:
 
     Their reference implementation in C++ can be found here: https://github.com/efficient/cuckoofilter
     '''
+
+    __slots__ = (
+        'capacity',
+        'fingerprint_size',
+        'max_kicks',
+        'buckets',
+        'size',
+        'bucket_size',
+    )
 
     def __init__(self, capacity, fingerprint_size, bucket_size=4, max_kicks=500):
         '''

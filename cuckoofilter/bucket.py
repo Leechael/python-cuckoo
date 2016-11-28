@@ -1,8 +1,10 @@
 import random
 
 
-class Bucket:
+class Bucket(object):
     '''Bucket class for storing fingerprints.'''
+
+    __slots__ = ("size", "b")
 
     def __init__(self, size=4):
         '''

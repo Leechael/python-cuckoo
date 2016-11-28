@@ -5,7 +5,7 @@ Example usage. Modeled after https://github.com/efficient/cuckoofilter/blob/mast
 import cuckoofilter
 import gzip
 
-if __name__ == '__main__':
+def main():
     total_items = 100000
     cf = cuckoofilter.CuckooFilter(total_items, 2)
 
@@ -29,3 +29,7 @@ if __name__ == '__main__':
     print('False positive rate is {:%}'.format(false_queries / total_queries))
     print("size after serialize: {:}".format(len(serialized)))
     print("size after serialize + gzip: {:}".format(len(gzip.compress(serialized))))
+
+
+if __name__ == '__main__':
+    main()
