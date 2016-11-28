@@ -117,13 +117,15 @@ class CuckooFilter:
     def __sizeof__(self):
         return super().__sizeof__() + sum(b.__sizeof__() for b in self.buckets)
 
+
+    MAGIC_STR=b"PYCF42"
     SERIALIZE_VERSION=1
 
     def serialize(self):
         io = BytesIO()
+        io.write(self.MAGIC_STR)
         io.write(pack(
-            "H2Q3I",
-            self.SERIALIZE_VERSION,
+            "2Q3I",
             self.capacity,
             self.size,
             self.bucket_size,
@@ -143,9 +145,10 @@ class CuckooFilter:
 
     @classmethod
     def unserialize(cls, io):
-        (version, capacity, size, bucket_size, fingerprint_size, max_kicks) = unpack(
-            "H2Q3I", io.read(36))
-        assert version == cls.SERIALIZE_VERSION
+        if io.read(6) != cls.MAGIC_STR:
+            raise Exception("Unexpected input IO")
+        (capacity, size, bucket_size, fingerprint_size, max_kicks) = unpack(
+            "2Q3I", io.read(28))
         cf = cls(capacity, fingerprint_size, bucket_size, max_kicks)
         cf.size = size
         i = 0
