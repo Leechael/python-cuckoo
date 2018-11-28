@@ -1,4 +1,5 @@
 import mmh3
+import codecs
 import random
 from struct import pack, unpack
 from io import BytesIO
@@ -15,6 +16,8 @@ class Fullfill(CuckooFilterError):
 class StreamValueError(CuckooFilterError):
     pass
 
+def int_from_bytes(bs, byteorder='big'):
+    return int(codecs.encode(bs, 'hex'), 16)
 
 class CuckooFilter(object):
     '''
@@ -79,7 +82,7 @@ class CuckooFilter(object):
         i = random.choice((i1, i2))
         for kick_count in range(self.max_kicks):
             fingerprint = self.buckets[i].swap(fingerprint)
-            i = (i ^ int.from_bytes(fingerprint, byteorder='big')) % self.capacity
+            i = (i ^ int_from_bytes(fingerprint, byteorder='big')) % self.capacity
 
             if self.buckets[i].insert(fingerprint):
                 return i
@@ -105,13 +108,13 @@ class CuckooFilter(object):
     def index_hash(self, item):
         '''Calculate the (first) index of an item in the filter.'''
         item_hash = mmh3.hash_bytes(item)
-        index = int.from_bytes(item_hash, byteorder='big') % self.capacity
+        index = int_from_bytes(item_hash, byteorder='big') % self.capacity
         return index
 
     def calculate_index_pair(self, item, fingerprint):
         '''Calculate both possible indices for the item'''
         i1 = self.index_hash(item)
-        i2 = (i1 ^ int.from_bytes(fingerprint, byteorder='big')) % self.capacity
+        i2 = (i1 ^ int_from_bytes(fingerprint, byteorder='big')) % self.capacity
         return i1, i2
 
     def fingerprint(self, item):
